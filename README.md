@@ -109,6 +109,18 @@ class App extends React.Component {
 AppRegistry.registerComponent('example', () => App)
 ```
 
+### Manually Pushing and Popping Pages
+```js
+import { pushPage, popPage } from 'rena-rero'
+import { store } from './where-ever-your-store-is'
+
+// Moves forward to SomePage, passing { extra: 'props' } on instantiation
+store.dispatch(pushPage({ page: 'SomePage', pass: { extra: 'props' } }))
+
+// Pops back to the previous page before SomePage
+store.dispatch(popPage())
+```
+
 [React Native]: http://TODO
 [Redux]: http://TODO
 [React Redux]: http://TODO
