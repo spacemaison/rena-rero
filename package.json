@@ -1,5 +1,5 @@
 {
-  "name": "react-native-redux-navigator",
+  "name": "rena-rero",
   "version": "0.0.1",
   "description": "React Native's Navigator component wrapped with a Redux pattern",
   "main": "index.js",
