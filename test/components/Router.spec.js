@@ -20,7 +20,8 @@ describe('<Router />', () => {
     expect(router._navigator.pop.called).to.be.false
     expect(router._navigator.push.callCount).to.equal(1)
     expect(router._navigator.push).calledWithExactly({
-      page: 'A'
+      page: 'A',
+      pass: null
     })
 
     store.getState.returns({ router: { stack: [] } })

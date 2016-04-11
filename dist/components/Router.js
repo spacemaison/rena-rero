@@ -33,14 +33,16 @@ var Router = exports.Router = function (_React$Component) {
   _createClass(Router, null, [{
     key: 'propTypes',
     get: function get() {
-      var _React$PropType = _reactNative2.default.PropType;
-      var object = _React$PropType.object;
-      var func = _React$PropType.func;
-      var number = _React$PropType.number;
-      var string = _React$PropType.string;
-      var _View$propTypes = _reactNative.View.propTypes;
-      var color = _View$propTypes.color;
-      var style = _View$propTypes.style;
+      var _React$PropTypes = _reactNative2.default.PropTypes;
+      var object = _React$PropTypes.object;
+      var func = _React$PropTypes.func;
+      var number = _React$PropTypes.number;
+      var string = _React$PropTypes.string;
+      var style = _reactNative.View.propTypes.style;
+
+      var _ref = _reactNative.StyleSheet.propTypes || {};
+
+      var color = _ref.color;
 
 
       return {
@@ -79,7 +81,9 @@ var Router = exports.Router = function (_React$Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      var store = this.props.store;
+      var _props = this.props;
+      var store = _props.store;
+      var initialRoute = _props.initialRoute;
 
       var _store$getState = store.getState();
 
@@ -87,7 +91,10 @@ var Router = exports.Router = function (_React$Component) {
 
 
       if (!lastStack) {
-        lastStack = [{ page: this.props.initialRoute }];
+        var linkInfo = new _LinkInformation.LinkInformation({ page: initialRoute });
+
+        store.dispatch((0, _router.pushPage)(linkInfo));
+        lastStack = [linkInfo];
       }
 
       this.unsubscribeToStore = store.subscribe(function () {
@@ -104,30 +111,9 @@ var Router = exports.Router = function (_React$Component) {
         }
 
         if (stack.length > lastLength) {
-          var _iteratorNormalCompletion = true;
-          var _didIteratorError = false;
-          var _iteratorError = undefined;
-
-          try {
-            for (var _iterator = stack.slice(-(stack.length - lastLength))[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-              var newPage = _step.value;
-
-              _this2._navigator.push(new _LinkInformation.LinkInformation(newPage));
-            }
-          } catch (err) {
-            _didIteratorError = true;
-            _iteratorError = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion && _iterator.return) {
-                _iterator.return();
-              }
-            } finally {
-              if (_didIteratorError) {
-                throw _iteratorError;
-              }
-            }
-          }
+          stack.slice(-(stack.length - lastLength)).forEach(function (newPage) {
+            _this2._navigator.push(new _LinkInformation.LinkInformation(newPage));
+          });
         } else if (stack.length < lastLength) {
           var difference = lastLength - stack.length;
           while (difference > 0) {
@@ -148,13 +134,13 @@ var Router = exports.Router = function (_React$Component) {
     value: function render() {
       var _this3 = this;
 
-      var _props = this.props;
-      var props = _props === undefined ? {} : _props;
       var _props2 = this.props;
-      var initialRoute = _props2.initialRoute;
-      var _props2$routes = _props2.routes;
-      var routes = _props2$routes === undefined ? {} : _props2$routes;
-      var store = _props2.store;
+      var props = _props2 === undefined ? {} : _props2;
+      var _props3 = this.props;
+      var initialRoute = _props3.initialRoute;
+      var _props3$routes = _props3.routes;
+      var routes = _props3$routes === undefined ? {} : _props3$routes;
+      var store = _props3.store;
 
       var routeMapper = new RouteMapper(routes, store, props, function () {
         return _this3._currentPage;
@@ -165,10 +151,10 @@ var Router = exports.Router = function (_React$Component) {
           return _this3._navigator = navigator;
         },
         initialRoute: { page: initialRoute },
-        sceneStyle: props.sceneStyle,
+        sceneStyle: [styles.page, props.sceneStyle],
         renderScene: this.renderScene,
         navigationBar: _reactNative2.default.createElement(_reactNative.Navigator.NavigationBar, {
-          style: props.toolbarStyle,
+          style: [styles.toolbar, props.toolbarStyle],
           routeMapper: routeMapper }) });
     }
   }, {
@@ -204,14 +190,17 @@ var RouteMapper = function () {
     value: function LeftButton(route, navigator, index, navState) {
       var _this5 = this;
 
-      if (index === 0 || typeof this.getBackButton !== 'function') {
+      var renderBackButton = this.props.renderBackButton;
+
+
+      if (index === 0 || typeof renderBackButton !== 'function') {
         return _reactNative2.default.createElement(_reactNative.View, { style: { width: 0, height: 0 } });
       } else {
         var _ret = function () {
           var props = _this5.props;
           var store = _this5.store;
 
-          var backButton = _this5.getBackButton();
+          var backButton = renderBackButton();
           var onPress = function onPress() {
             return store.dispatch((0, _router.popPage)());
           };
@@ -257,7 +246,7 @@ var RouteMapper = function () {
 
       return _reactNative2.default.createElement(
         _reactNative.Text,
-        { style: this.props.titleStyle },
+        { style: [styles.toolbarTitle, this.props.titleStyle] },
         title
       );
     }
@@ -265,3 +254,18 @@ var RouteMapper = function () {
 
   return RouteMapper;
 }();
+
+var TOOLBAR_HEIGHT = 53;
+var styles = _reactNative.StyleSheet.create({
+  toolbar: {
+    flex: 1,
+    height: TOOLBAR_HEIGHT
+  },
+  toolbarTitle: {
+    marginVertical: 9,
+    fontSize: 20
+  },
+  page: {
+    paddingTop: TOOLBAR_HEIGHT
+  }
+});

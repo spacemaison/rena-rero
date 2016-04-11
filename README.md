@@ -17,7 +17,7 @@ Usage
 
 #### Main.js
 ```js
-import React from 'react-native'
+import React, { AppRegistry } from 'react-native'
 import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
 import { Router, router } from 'rena-rero'

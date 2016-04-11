@@ -68,12 +68,17 @@ var Link = exports.Link = function (_React$Component) {
       var linkStyle = context.linkStyle;
       var style = props.style;
       var children = props.children;
+      var to = props.to;
 
 
       return _reactNative2.default.createElement(
         _reactNative.TouchableHighlight,
         { style: linkStyle || style || {}, onPress: onPress },
-        children
+        children || _reactNative2.default.createElement(
+          _reactNative.Text,
+          null,
+          to
+        )
       );
     }
   }, {
