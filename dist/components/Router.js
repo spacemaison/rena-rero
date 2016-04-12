@@ -15,6 +15,10 @@ var _reactNative = require('react-native');
 
 var _reactNative2 = _interopRequireDefault(_reactNative);
 
+var _reactNativeDrawerLayout = require('react-native-drawer-layout');
+
+var _reactNativeDrawerLayout2 = _interopRequireDefault(_reactNativeDrawerLayout);
+
 var _router = require('../actions/router');
 
 var _LinkInformation = require('../models/LinkInformation');
@@ -34,6 +38,7 @@ var Router = exports.Router = function (_React$Component) {
     key: 'propTypes',
     get: function get() {
       var _React$PropTypes = _reactNative2.default.PropTypes;
+      var any = _React$PropTypes.any;
       var object = _React$PropTypes.object;
       var func = _React$PropTypes.func;
       var number = _React$PropTypes.number;
@@ -46,6 +51,8 @@ var Router = exports.Router = function (_React$Component) {
 
 
       return {
+        drawerWidth: number,
+        drawerPosition: any, // FIXME
         routes: object,
         initialRoute: string.isRequired,
         store: object,
@@ -53,7 +60,8 @@ var Router = exports.Router = function (_React$Component) {
         toolbarStyle: style,
         titleStyle: style,
         renderBackButton: func,
-        backButtonUnderlayColor: color,
+        renderDrawerContent: func,
+        backButtonUnderlayColor: any, // FIXME
         backButtonStyle: style,
         backButtonActiveOpacity: number
       };
@@ -145,8 +153,7 @@ var Router = exports.Router = function (_React$Component) {
       var routeMapper = new RouteMapper(routes, store, props, function () {
         return _this3._currentPage;
       });
-
-      return _reactNative2.default.createElement(_reactNative.Navigator, {
+      var navigator = _reactNative2.default.createElement(_reactNative.Navigator, {
         ref: function ref(navigator) {
           return _this3._navigator = navigator;
         },
@@ -156,6 +163,19 @@ var Router = exports.Router = function (_React$Component) {
         navigationBar: _reactNative2.default.createElement(_reactNative.Navigator.NavigationBar, {
           style: [styles.toolbar, props.toolbarStyle],
           routeMapper: routeMapper }) });
+
+      if (typeof props.renderDrawerContent === 'function') {
+        return _reactNative2.default.createElement(
+          _reactNativeDrawerLayout2.default,
+          {
+            drawerWidth: props.drawerWidth,
+            drawerPosition: props.drawerPosition,
+            renderNavigationView: props.renderDrawerContent },
+          navigator
+        );
+      } else {
+        return navigator;
+      }
     }
   }, {
     key: 'renderScene',
