@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "React Native's Navigator component wrapped with a Redux compatible router",
   "main": "dist/index.js",
+  "react-native": "lib/index.js",
   "scripts": {
     "test": "node_modules/mocha/bin/mocha --compilers js:test/compile.js --require test/setup.js --recursive test/**/*.spec.js"
   },
@@ -24,11 +25,5 @@
     "mocha": "^2.4.5",
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0"
-  },
-  "babel": {
-    "presets": [
-      "babel-preset-es2015",
-      "babel-preset-react"
-    ]
   }
 }
