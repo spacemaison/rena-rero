@@ -262,7 +262,8 @@ var RouteMapper = function () {
   }, {
     key: 'Title',
     value: function Title(route, navigator, index, navState) {
-      var title = this.routes[route.page].title || '';
+      var Page = this.routes[route.page] || {};
+      var title = Page.title || '';
 
       return _reactNative2.default.createElement(
         _reactNative.Text,
