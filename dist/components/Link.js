@@ -7,9 +7,11 @@ exports.Link = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _reactNative = require('react-native');
+var _react = require('react');
 
-var _reactNative2 = _interopRequireDefault(_reactNative);
+var _react2 = _interopRequireDefault(_react);
+
+var _reactNative = require('react-native');
 
 var _router = require('../actions/router');
 
@@ -28,10 +30,10 @@ var Link = exports.Link = function (_React$Component) {
     key: 'propTypes',
     get: function get() {
       return {
-        children: _reactNative.PropTypes.element,
-        pass: _reactNative.PropTypes.any,
+        children: _react.PropTypes.element,
+        pass: _react.PropTypes.any,
         style: _reactNative.View.propTypes.style,
-        to: _reactNative.PropTypes.string.isRequired
+        to: _react.PropTypes.string.isRequired
       };
     }
   }, {
@@ -39,7 +41,7 @@ var Link = exports.Link = function (_React$Component) {
     get: function get() {
       return {
         linkStyle: _reactNative.View.propTypes.style,
-        store: _reactNative.PropTypes.any
+        store: _react.PropTypes.any
       };
     }
   }]);
@@ -71,10 +73,10 @@ var Link = exports.Link = function (_React$Component) {
       var to = props.to;
 
 
-      return _reactNative2.default.createElement(
+      return _react2.default.createElement(
         _reactNative.TouchableHighlight,
         { style: linkStyle || style || {}, onPress: onPress },
-        children || _reactNative2.default.createElement(
+        children || _react2.default.createElement(
           _reactNative.Text,
           null,
           to
@@ -104,4 +106,4 @@ var Link = exports.Link = function (_React$Component) {
   }]);
 
   return Link;
-}(_reactNative2.default.Component);
+}(_react2.default.Component);

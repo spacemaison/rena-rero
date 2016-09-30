@@ -11,9 +11,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _reactNative = require('react-native');
+var _react = require('react');
 
-var _reactNative2 = _interopRequireDefault(_reactNative);
+var _react2 = _interopRequireDefault(_react);
+
+var _reactNative = require('react-native');
 
 var _reactNativeDrawerLayout = require('react-native-drawer-layout');
 
@@ -37,7 +39,7 @@ var Router = exports.Router = function (_React$Component) {
   _createClass(Router, null, [{
     key: 'propTypes',
     get: function get() {
-      var _React$PropTypes = _reactNative2.default.PropTypes;
+      var _React$PropTypes = _react2.default.PropTypes;
       var any = _React$PropTypes.any;
       var object = _React$PropTypes.object;
       var func = _React$PropTypes.func;
@@ -153,19 +155,19 @@ var Router = exports.Router = function (_React$Component) {
       var routeMapper = new RouteMapper(routes, store, props, function () {
         return _this3._currentPage;
       });
-      var navigator = _reactNative2.default.createElement(_reactNative.Navigator, {
+      var navigator = _react2.default.createElement(_reactNative.Navigator, {
         ref: function ref(navigator) {
           return _this3._navigator = navigator;
         },
         initialRoute: { page: initialRoute },
         sceneStyle: [styles.page, props.sceneStyle],
         renderScene: this.renderScene,
-        navigationBar: _reactNative2.default.createElement(_reactNative.Navigator.NavigationBar, {
+        navigationBar: _react2.default.createElement(_reactNative.Navigator.NavigationBar, {
           style: [styles.toolbar, props.toolbarStyle],
           routeMapper: routeMapper }) });
 
       if (typeof props.renderDrawerContent === 'function') {
-        return _reactNative2.default.createElement(
+        return _react2.default.createElement(
           _reactNativeDrawerLayout2.default,
           {
             drawerWidth: props.drawerWidth,
@@ -186,14 +188,14 @@ var Router = exports.Router = function (_React$Component) {
       var routes = _props$routes === undefined ? {} : _props$routes;
 
       var Page = routes[route.page];
-      return Page ? _reactNative2.default.createElement(Page, { ref: function ref(page) {
+      return Page ? _react2.default.createElement(Page, { ref: function ref(page) {
           return _this4._currentPage = page;
-        } }) : _reactNative2.default.createElement(_reactNative.View, null);
+        } }) : _react2.default.createElement(_reactNative.View, null);
     }
   }]);
 
   return Router;
-}(_reactNative2.default.Component);
+}(_react2.default.Component);
 
 var RouteMapper = function () {
   function RouteMapper(routes, store, props, getCurrentPage) {
@@ -214,7 +216,7 @@ var RouteMapper = function () {
 
 
       if (index === 0 || typeof renderBackButton !== 'function') {
-        return _reactNative2.default.createElement(_reactNative.View, { style: { width: 0, height: 0 } });
+        return _react2.default.createElement(_reactNative.View, { style: { width: 0, height: 0 } });
       } else {
         var _ret = function () {
           var props = _this5.props;
@@ -237,7 +239,7 @@ var RouteMapper = function () {
           }
 
           return {
-            v: _reactNative2.default.createElement(
+            v: _react2.default.createElement(
               _reactNative.TouchableHighlight,
               _extends({}, touchableProps, { onPress: onPress }),
               backButton
@@ -257,7 +259,7 @@ var RouteMapper = function () {
         return Page.renderToolbarActions();
       }
 
-      return _reactNative2.default.createElement(_reactNative.View, null);
+      return _react2.default.createElement(_reactNative.View, null);
     }
   }, {
     key: 'Title',
@@ -265,7 +267,7 @@ var RouteMapper = function () {
       var Page = this.routes[route.page] || {};
       var title = Page.title || '';
 
-      return _reactNative2.default.createElement(
+      return _react2.default.createElement(
         _reactNative.Text,
         { style: [styles.toolbarTitle, this.props.titleStyle] },
         title
