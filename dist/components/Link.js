@@ -7,6 +7,10 @@ exports.Link = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _url = require('url');
+
+var _url2 = _interopRequireDefault(_url);
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -41,6 +45,7 @@ var Link = exports.Link = function (_React$Component) {
     get: function get() {
       return {
         linkStyle: _reactNative.View.propTypes.style,
+        urlLinker: _react.PropTypes.any,
         store: _react.PropTypes.any
       };
     }
@@ -89,6 +94,8 @@ var Link = exports.Link = function (_React$Component) {
       var _ref = this.context || {};
 
       var store = _ref.store;
+      var _ref$urlLinker = _ref.urlLinker;
+      var urlLinker = _ref$urlLinker === undefined ? _reactNative.Linking : _ref$urlLinker;
 
       var _ref2 = this.props || {};
 
@@ -96,12 +103,17 @@ var Link = exports.Link = function (_React$Component) {
       var _ref2$pass = _ref2.pass;
       var pass = _ref2$pass === undefined ? null : _ref2$pass;
 
+      var uri = _url2.default.parse(to);
 
       if (store == null) {
         throw new Error('Cannot instantiate link elements outside of a Provider element');
       }
 
-      store.dispatch((0, _router.pushPage)({ page: to, props: pass }));
+      if (uri.protocol !== null) {
+        urlLinker.openURL(to);
+      } else {
+        store.dispatch((0, _router.pushPage)({ page: to, props: pass }));
+      }
     }
   }]);
 
