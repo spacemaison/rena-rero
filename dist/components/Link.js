@@ -19,6 +19,8 @@ var _reactNative = require('react-native');
 
 var _router = require('../actions/router');
 
+var _LinkInformation = require('../models/LinkInformation');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -109,10 +111,10 @@ var Link = exports.Link = function (_React$Component) {
         throw new Error('Cannot instantiate link elements outside of a Provider element');
       }
 
-      if (uri.protocol !== null) {
+      if (uri.protocol && uri.protocol !== 'page://') {
         urlLinker.openURL(to);
       } else {
-        store.dispatch((0, _router.pushPage)({ page: to, props: pass }));
+        store.dispatch((0, _router.pushPage)(new _LinkInformation.LinkInformation({ page: to, pass: pass })));
       }
     }
   }]);

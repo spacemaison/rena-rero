@@ -1,6 +1,7 @@
 /*globals describe, it*/
 import { expect } from 'chai'
 import { router } from '../../lib/reducers/router'
+import { LinkInformation } from '../../lib/models/LinkInformation'
 import { POP_PAGE, PUSH_PAGE } from '../../lib/actions/actions'
 
 describe('router reducers', () => {
@@ -32,13 +33,13 @@ describe('router reducers', () => {
     })
 
     expect(stack).to.deep.equal([
-      { page: 'A', pass: null }
+      new LinkInformation({ page: 'A', pass: null })
     ])
   })
 
   it('pushes a page with a previous stack', () => {
     const previous = {
-      stack: [ { page: 'A', pass: null } ]
+      stack: [ new LinkInformation({ page: 'A', pass: null }) ]
     }
     const { stack } = router(previous, {
       type: PUSH_PAGE,
@@ -46,8 +47,8 @@ describe('router reducers', () => {
     })
 
     expect(stack).to.deep.equal([
-      { page: 'A', pass: null },
-      { page: 'B', pass: { foo: 'bar' } }
+      new LinkInformation({ page: 'A', pass: null }),
+      new LinkInformation({ page: 'B', pass: { foo: 'bar' } })
     ])
   })
 })

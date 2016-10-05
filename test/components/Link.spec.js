@@ -2,6 +2,7 @@
 import { expect } from 'chai'
 import { stub } from 'sinon'
 import { Link } from '../../lib/components/Link'
+import { LinkInformation } from '../../lib/models/LinkInformation'
 
 describe('<Link />', () => {
   it('responds to onPress events without a url by dispatching push page actions', () => {
@@ -13,10 +14,10 @@ describe('<Link />', () => {
 
     expect(store.dispatch).to.have.been.calledWithExactly({
       type: 'RENA_RERO_PUSH_PAGE',
-      payload: {
+      payload: new LinkInformation({
         page: 'foo',
-        props: pass
-      }
+        pass
+      })
     })
   })
 

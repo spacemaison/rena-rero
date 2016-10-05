@@ -2,6 +2,7 @@
 import { expect } from 'chai'
 import { stub } from 'sinon'
 import { Router } from '../../lib/components/Router'
+import { LinkInformation } from '../../lib/models/LinkInformation'
 
 describe('<Router />', () => {
   it('responds to store router events by pushing/poping pages', () => {
@@ -19,10 +20,10 @@ describe('<Router />', () => {
 
     expect(router._navigator.pop.called).to.be.false
     expect(router._navigator.push.callCount).to.equal(1)
-    expect(router._navigator.push).calledWithExactly({
+    expect(router._navigator.push).calledWithExactly(new LinkInformation({
       page: 'A',
       pass: null
-    })
+    }))
 
     store.getState.returns({ router: { stack: [] } })
     store.subscribe.lastCall.args[0]()

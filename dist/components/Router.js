@@ -15,6 +15,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _url = require('url');
+
+var _url2 = _interopRequireDefault(_url);
+
 var _reactNative = require('react-native');
 
 var _reactNativeDrawerLayout = require('react-native-drawer-layout');
@@ -159,7 +163,7 @@ var Router = exports.Router = function (_React$Component) {
         ref: function ref(navigator) {
           return _this3._navigator = navigator;
         },
-        initialRoute: { page: initialRoute },
+        initialRoute: new _LinkInformation.LinkInformation({ page: initialRoute }),
         sceneStyle: [styles.page, props.sceneStyle],
         renderScene: this.renderScene,
         navigationBar: _react2.default.createElement(_reactNative.Navigator.NavigationBar, {
@@ -187,10 +191,16 @@ var Router = exports.Router = function (_React$Component) {
       var _props$routes = this.props.routes;
       var routes = _props$routes === undefined ? {} : _props$routes;
 
-      var Page = routes[route.page];
-      return Page ? _react2.default.createElement(Page, { ref: function ref(page) {
+      var Page = getPage(routes, route);
+      var uri = _url2.default.parse(route.page);
+
+      if (!Page) {
+        return _react2.default.createElement(_reactNative.View, null);
+      }
+
+      return _react2.default.createElement(Page, _extends({}, route.pass, { url: uri, ref: function ref(page) {
           return _this4._currentPage = page;
-        } }) : _react2.default.createElement(_reactNative.View, null);
+        } }));
     }
   }]);
 
@@ -253,7 +263,7 @@ var RouteMapper = function () {
   }, {
     key: 'RightButton',
     value: function RightButton(route, navigator, index, navState) {
-      var Page = this.routes[route.page] || {};
+      var Page = getPage(this.routes, route) || {};
 
       if (typeof Page.renderToolbarActions === 'function') {
         return Page.renderToolbarActions();
@@ -264,7 +274,7 @@ var RouteMapper = function () {
   }, {
     key: 'Title',
     value: function Title(route, navigator, index, navState) {
-      var Page = this.routes[route.page] || {};
+      var Page = getPage(this.routes, route) || {};
       var title = Page.title || '';
 
       return _react2.default.createElement(
@@ -292,3 +302,13 @@ var styles = _reactNative.StyleSheet.create({
     paddingTop: TOOLBAR_HEIGHT
   }
 });
+
+function getPage(routes, route) {
+  var uri = _url2.default.parse(route.page);
+
+  if (!uri.protocol || uri.protocol !== 'page:') {
+    throw new Error('URL protocol is not \'page:\' for route: ' + route.page);
+  }
+
+  return routes[uri.path] || null;
+}
