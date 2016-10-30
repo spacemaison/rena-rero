@@ -1,32 +1,57 @@
 /*globals describe, it*/
 import { expect } from 'chai'
 import { router } from '../../lib/reducers/router'
-import { LinkInformation } from '../../lib/models/LinkInformation'
-import { POP_PAGE, PUSH_PAGE } from '../../lib/actions/actions'
+import { Page } from '../../lib/components/Page'
+import { Route } from '../../lib/models/Route'
+import { RouterState } from '../../lib/models/RouterState'
+import {
+  CLOSE_DRAWER,
+  OPEN_DRAWER,
+  POP_PAGE,
+  PUSH_PAGE } from '../../lib/actions/actions'
 
 describe('router reducers', () => {
-  it('pops a page with a previous stack', () => {
-    let previous = {
-      stack: [
-        { page: 'A' },
-        { page: 'B' }
-      ]
-    }
+  it('opens the drawer', () => {
+    const previous = new RouterState({ pages: { Page }, initialPage: 'Page' })
+    const routerState = router(previous)(previous, { type: OPEN_DRAWER })
 
-    const { stack } = router(previous, { type: POP_PAGE })
+    expect(routerState.drawer).to.deep.equal({
+      isOpen: true
+    })
+  })
 
-    expect(stack).to.deep.equal([
-      { page: 'A' }
+  it('closes the drawer', () => {
+    const previous = new RouterState({ pages: { Page }, initialPage: 'Page' })
+    const routerState = router(previous)(previous, { type: CLOSE_DRAWER })
+
+    expect(routerState.drawer).to.deep.equal({
+      isOpen: false
+    })
+  })
+
+  // Not testable, RN doesn't export StateUtils helpers to Node
+  it.skip('pops a page with a previous stack', () => {
+    const routes = [
+      new Route({ key: 'A' }),
+      new Route({ key: 'B' })
+    ]
+    const previous = new RouterState({ index: 1, routes })
+    const state = router()(previous, { type: POP_PAGE })
+
+    expect(state.routes).to.deep.equal([
+      { key: 'A' }
     ])
   })
 
-  it('pops a page with an empty stack', () => {
+  // Not testable, RN doesn't export StateUtils helpers to Node
+  it.skip('pops a page with an empty stack', () => {
     const { stack } = router(void 0, { type: POP_PAGE })
 
     expect(stack).to.have.a.lengthOf(0)
   })
 
-  it('pushes a page with an empty stack', () => {
+  // Not testable, RN doesn't export StateUtils helpers to Node
+  it.skip('pushes a page with an empty stack', () => {
     const { stack } = router(void 0, {
       type: PUSH_PAGE,
       payload: { page: 'A' }
@@ -37,7 +62,8 @@ describe('router reducers', () => {
     ])
   })
 
-  it('pushes a page with a previous stack', () => {
+  // Not testable, RN doesn't export StateUtils helpers to Node
+  it.skip('pushes a page with a previous stack', () => {
     const previous = {
       stack: [ new LinkInformation({ page: 'A', pass: null }) ]
     }

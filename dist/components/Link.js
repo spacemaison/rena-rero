@@ -19,7 +19,7 @@ var _reactNative = require('react-native');
 
 var _router = require('../actions/router');
 
-var _LinkInformation = require('../models/LinkInformation');
+var _Route = require('../models/Route');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36,7 +36,6 @@ var Link = exports.Link = function (_React$Component) {
     key: 'propTypes',
     get: function get() {
       return {
-        children: _react.PropTypes.element,
         pass: _react.PropTypes.any,
         style: _reactNative.View.propTypes.style,
         to: _react.PropTypes.string.isRequired
@@ -111,10 +110,16 @@ var Link = exports.Link = function (_React$Component) {
         throw new Error('Cannot instantiate link elements outside of a Provider element');
       }
 
-      if (uri.protocol && uri.protocol !== 'page://') {
+      if (uri.protocol && uri.protocol !== 'page:') {
         urlLinker.openURL(to);
       } else {
-        store.dispatch((0, _router.pushPage)(new _LinkInformation.LinkInformation({ page: to, pass: pass })));
+        store.dispatch((0, _router.closeDrawer)());
+
+        if (uri.host === 'previous') {
+          store.dispatch((0, _router.popPage)());
+        } else {
+          store.dispatch((0, _router.pushPage)(new _Route.Route({ key: to, pass: pass })));
+        }
       }
     }
   }]);

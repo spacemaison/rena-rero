@@ -19,7 +19,7 @@ Object.defineProperty(exports, 'pushPage', {
   }
 });
 
-var _Router = require('./components/Router');
+var _Router = require('./containers/Router');
 
 Object.defineProperty(exports, 'Router', {
   enumerable: true,
@@ -34,6 +34,15 @@ Object.defineProperty(exports, 'Link', {
   enumerable: true,
   get: function get() {
     return _Link.Link;
+  }
+});
+
+var _Page = require('./components/Page');
+
+Object.defineProperty(exports, 'Page', {
+  enumerable: true,
+  get: function get() {
+    return _Page.Page;
   }
 });
 

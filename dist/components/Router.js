@@ -5,8 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Router = undefined;
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -21,13 +19,17 @@ var _url2 = _interopRequireDefault(_url);
 
 var _reactNative = require('react-native');
 
-var _reactNativeDrawerLayout = require('react-native-drawer-layout');
+var _Page = require('./Page');
 
-var _reactNativeDrawerLayout2 = _interopRequireDefault(_reactNativeDrawerLayout);
+var _Drawer = require('./Drawer');
 
 var _router = require('../actions/router');
 
 var _LinkInformation = require('../models/LinkInformation');
+
+var _DrawerOptions = require('../models/DrawerOptions');
+
+var _RouterState = require('../models/RouterState');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -47,6 +49,7 @@ var Router = exports.Router = function (_React$Component) {
       var any = _React$PropTypes.any;
       var object = _React$PropTypes.object;
       var func = _React$PropTypes.func;
+      var instanceOf = _React$PropTypes.instanceOf;
       var number = _React$PropTypes.number;
       var string = _React$PropTypes.string;
       var style = _reactNative.View.propTypes.style;
@@ -57,126 +60,63 @@ var Router = exports.Router = function (_React$Component) {
 
 
       return {
-        drawerWidth: number,
-        drawerPosition: any, // FIXME
-        routes: object,
-        initialRoute: string.isRequired,
-        store: object,
-        sceneStyle: style,
-        toolbarStyle: style,
-        titleStyle: style,
-        renderBackButton: func,
+        drawerProps: instanceOf(_DrawerOptions.DrawerOptions),
         renderDrawerContent: func,
-        backButtonUnderlayColor: any, // FIXME
-        backButtonStyle: style,
-        backButtonActiveOpacity: number
+        routerState: instanceOf(_RouterState.RouterState),
+        toolbarStyle: style
+      };
+    }
+  }, {
+    key: 'contextTypes',
+    get: function get() {
+      return {
+        store: _react2.default.PropTypes.object
       };
     }
   }]);
 
   function Router() {
-    var props = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-    var context = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-    var renderer = arguments[2];
+    var _Object$getPrototypeO;
 
     _classCallCheck(this, Router);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Router).call(this, props, context, renderer));
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
 
+    var _this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(Router)).call.apply(_Object$getPrototypeO, [this].concat(args)));
+
+    _this.renderScenes = _this.renderScenes.bind(_this);
     _this.renderScene = _this.renderScene.bind(_this);
-    _this.unsubscribeToStore = function () {};
-    _this._navigator = null;
-    _this._currentPage = null;
+    _this.onNavigateBack = _this.onNavigateBack.bind(_this);
     return _this;
   }
 
   _createClass(Router, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      var _this2 = this;
-
-      var _props = this.props;
-      var store = _props.store;
-      var initialRoute = _props.initialRoute;
-
-      var _store$getState = store.getState();
-
-      var lastStack = _store$getState.router.stack;
-
-
-      if (!lastStack) {
-        var linkInfo = new _LinkInformation.LinkInformation({ page: initialRoute });
-
-        store.dispatch((0, _router.pushPage)(linkInfo));
-        lastStack = [linkInfo];
-      }
-
-      this.unsubscribeToStore = store.subscribe(function () {
-        var _store$getState2 = store.getState();
-
-        var _store$getState2$rout = _store$getState2.router.stack;
-        var stack = _store$getState2$rout === undefined ? [] : _store$getState2$rout;
-
-        var lastLength = lastStack.length;
-
-        if (!_this2._navigator) {
-          lastStack = stack;
-          return;
-        }
-
-        if (stack.length > lastLength) {
-          stack.slice(-(stack.length - lastLength)).forEach(function (newPage) {
-            _this2._navigator.push(new _LinkInformation.LinkInformation(newPage));
-          });
-        } else if (stack.length < lastLength) {
-          var difference = lastLength - stack.length;
-          while (difference > 0) {
-            _this2._navigator.pop();
-            difference -= 1;
-          }
-        }
-        lastStack = stack;
-      });
-    }
-  }, {
-    key: 'componentWillUnmount',
-    value: function componentWillUnmount() {
-      this.unsubscribeToStore();
-    }
-  }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
+      var props = this.props;
 
-      var _props2 = this.props;
-      var props = _props2 === undefined ? {} : _props2;
-      var _props3 = this.props;
-      var initialRoute = _props3.initialRoute;
-      var _props3$routes = _props3.routes;
-      var routes = _props3$routes === undefined ? {} : _props3$routes;
-      var store = _props3.store;
-
-      var routeMapper = new RouteMapper(routes, store, props, function () {
-        return _this3._currentPage;
+      var navigator = _react2.default.createElement(_reactNative.NavigationExperimental.Transitioner, {
+        navigationState: this.props.routerState,
+        render: this.renderScenes
       });
-      var navigator = _react2.default.createElement(_reactNative.Navigator, {
-        ref: function ref(navigator) {
-          return _this3._navigator = navigator;
-        },
-        initialRoute: new _LinkInformation.LinkInformation({ page: initialRoute }),
-        sceneStyle: [styles.page, props.sceneStyle],
-        renderScene: this.renderScene,
-        navigationBar: _react2.default.createElement(_reactNative.Navigator.NavigationBar, {
-          style: [styles.toolbar, props.toolbarStyle],
-          routeMapper: routeMapper }) });
+      var drawerProps = void 0;
 
       if (typeof props.renderDrawerContent === 'function') {
+        drawerProps = Object.assign({}, props.drawerProps || {}, {
+          renderContent: props.renderDrawerContent
+        });
+      } else if (props.drawerProps) {
+        drawerProps = props.drawerProps;
+      }
+
+      if (drawerProps) {
+        drawerProps = Object.assign({}, new _DrawerOptions.DrawerOptions(drawerProps));
+
         return _react2.default.createElement(
-          _reactNativeDrawerLayout2.default,
-          {
-            drawerWidth: props.drawerWidth,
-            drawerPosition: props.drawerPosition,
-            renderNavigationView: props.renderDrawerContent },
+          _Drawer.Drawer,
+          drawerProps,
           navigator
         );
       } else {
@@ -184,131 +124,117 @@ var Router = exports.Router = function (_React$Component) {
       }
     }
   }, {
+    key: 'renderScenes',
+    value: function renderScenes(props) {
+      var _this2 = this;
+
+      var onNavigateBack = this.onNavigateBack;
+      var _props = this.props;
+      var toolbarStyle = _props.toolbarStyle;
+      var routerState = _props.routerState;
+
+
+      var ActivePage = getPage(routerState.pages, props.scene.route);
+      var renderToolbar = ActivePage.renderToolbar || _Page.Page.renderToolbar;
+      var toolbar = renderToolbar.call(ActivePage, Object.assign({}, props, {
+        onNavigateBack: onNavigateBack,
+        toolbarStyle: toolbarStyle
+      }));
+      var scenes = props.scenes.map(function (scene) {
+        return _this2.renderScene(Object.assign({}, props, { scene: scene }));
+      });
+
+      return _react2.default.createElement(
+        _reactNative.View,
+        { style: styles.sceneOuterContainer },
+        _react2.default.createElement(
+          _reactNative.View,
+          { style: styles.sceneInnerContainer },
+          scenes
+        ),
+        toolbar
+      );
+    }
+  }, {
     key: 'renderScene',
-    value: function renderScene(route, navigator) {
-      var _this4 = this;
+    value: function renderScene(props) {
+      var onNavigateBack = this.onNavigateBack;
 
-      var _props$routes = this.props.routes;
-      var routes = _props$routes === undefined ? {} : _props$routes;
+      var _ref2 = props.scene || {};
 
-      var Page = getPage(routes, route);
-      var uri = _url2.default.parse(route.page);
+      var route = _ref2.route;
+      var url = route.url;
+      var pass = route.pass;
 
-      if (!Page) {
-        return _react2.default.createElement(_reactNative.View, null);
+
+      var CurrentPage = getPage(this.props.routerState.pages, route);
+      var getStyle = CurrentPage.style || _Page.Page.style;
+      var getPanHandlers = CurrentPage.panHandlers || _Page.Page.panHandlers;
+
+      var style = getStyle.call(CurrentPage, props);
+      var panHandlers = getPanHandlers.call(CurrentPage, Object.assign({}, props, {
+        onNavigateBack: onNavigateBack
+      }));
+
+      return _react2.default.createElement(_reactNative.NavigationExperimental.Card, _extends({}, props, {
+        key: 'card_' + props.scene.key,
+        style: style,
+        panHandlers: panHandlers,
+        renderScene: function renderScene(props) {
+          return _react2.default.createElement(CurrentPage, _extends({}, pass || {}, { url: url }));
+        }
+      }));
+    }
+  }, {
+    key: 'onNavigateBack',
+    value: function onNavigateBack() {
+      var _ref3 = this.context || {};
+
+      var store = _ref3.store;
+
+
+      if (store) {
+        store.dispatch((0, _router.popPage)());
       }
-
-      return _react2.default.createElement(Page, _extends({}, route.pass, { url: uri, ref: function ref(page) {
-          return _this4._currentPage = page;
-        } }));
     }
   }]);
 
   return Router;
 }(_react2.default.Component);
 
-var RouteMapper = function () {
-  function RouteMapper(routes, store, props, getCurrentPage) {
-    _classCallCheck(this, RouteMapper);
-
-    this.routes = routes;
-    this.store = store;
-    this.props = props;
-    this.getCurrentPage = getCurrentPage;
-  }
-
-  _createClass(RouteMapper, [{
-    key: 'LeftButton',
-    value: function LeftButton(route, navigator, index, navState) {
-      var _this5 = this;
-
-      var renderBackButton = this.props.renderBackButton;
-
-
-      if (index === 0 || typeof renderBackButton !== 'function') {
-        return _react2.default.createElement(_reactNative.View, { style: { width: 0, height: 0 } });
-      } else {
-        var _ret = function () {
-          var props = _this5.props;
-          var store = _this5.store;
-
-          var backButton = renderBackButton();
-          var onPress = function onPress() {
-            return store.dispatch((0, _router.popPage)());
-          };
-          var touchableProps = {};
-
-          if (props.backButtonActiveOpacity) {
-            touchableProps.activeOpacity = props.backButtonActiveOpacity;
-          }
-          if (props.backButtonStyle) {
-            touchableProps.style = props.backButtonStyle;
-          }
-          if (props.backButtonUnderlayColor) {
-            touchableProps.underlayColor = props.backButtonUnderlayColor;
-          }
-
-          return {
-            v: _react2.default.createElement(
-              _reactNative.TouchableHighlight,
-              _extends({}, touchableProps, { onPress: onPress }),
-              backButton
-            )
-          };
-        }();
-
-        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
-      }
-    }
-  }, {
-    key: 'RightButton',
-    value: function RightButton(route, navigator, index, navState) {
-      var Page = getPage(this.routes, route) || {};
-
-      if (typeof Page.renderToolbarActions === 'function') {
-        return Page.renderToolbarActions();
-      }
-
-      return _react2.default.createElement(_reactNative.View, null);
-    }
-  }, {
-    key: 'Title',
-    value: function Title(route, navigator, index, navState) {
-      var Page = getPage(this.routes, route) || {};
-      var title = Page.title || '';
-
-      return _react2.default.createElement(
-        _reactNative.Text,
-        { style: [styles.toolbarTitle, this.props.titleStyle] },
-        title
-      );
-    }
-  }]);
-
-  return RouteMapper;
-}();
-
-var TOOLBAR_HEIGHT = 53;
 var styles = _reactNative.StyleSheet.create({
-  toolbar: {
-    flex: 1,
-    height: TOOLBAR_HEIGHT
+  sceneOuterContainer: {
+    flex: 1
   },
-  toolbarTitle: {
-    marginVertical: 9,
-    fontSize: 20
+
+  sceneInnerContainer: {
+    flex: 1
   },
-  page: {
-    paddingTop: TOOLBAR_HEIGHT
+
+  overlayBase: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0
   }
 });
 
 function getPage(routes, route) {
-  var uri = _url2.default.parse(route.page);
+  var url = route.url;
 
-  if (!uri.protocol || uri.protocol !== 'page:') {
-    throw new Error('URL protocol is not \'page:\' for route: ' + route.page);
+
+  if (!url || !url.protocol || url.protocol !== 'page:') {
+    throw new Error('URL protocol is not \'page:\' for route: ' + url);
   }
 
-  return routes[uri.path] || null;
+  if (!routes.hasOwnProperty(url.path)) {
+    throw new Error('Page at: "' + url.path + '" does not exist');
+  }
+
+  if (Object.getPrototypeOf(routes[url.path].prototype).constructor !== _Page.Page) {
+    throw new TypeError('Expected Page at route: ' + url.path + '. Did your page inherit from the ' + 'Page component?');
+  }
+
+  return routes[url.path];
 }
