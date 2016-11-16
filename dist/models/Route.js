@@ -23,10 +23,13 @@ var Route = exports.Route = function () {
     var url = _ref.url;
     var _ref$pass = _ref.pass;
     var pass = _ref$pass === undefined ? null : _ref$pass;
+    var _ref$transition = _ref.transition;
+    var transition = _ref$transition === undefined ? function () {} : _ref$transition;
 
     _classCallCheck(this, Route);
 
     this.pass = pass;
+    this.transition = transition;
 
     if (typeof key === 'string' && key) {
       this.url = _url2.default.parse(key, true);

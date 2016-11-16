@@ -35,19 +35,30 @@ var Link = exports.Link = function (_React$Component) {
   _createClass(Link, null, [{
     key: 'propTypes',
     get: function get() {
+      var any = _react.PropTypes.any;
+      var string = _react.PropTypes.string;
+      var func = _react.PropTypes.func;
+      var style = _reactNative.View.propTypes.style;
+
+
       return {
-        pass: _react.PropTypes.any,
-        style: _reactNative.View.propTypes.style,
-        to: _react.PropTypes.string.isRequired
+        pass: any,
+        style: style,
+        to: string.isRequired,
+        transition: func
       };
     }
   }, {
     key: 'contextTypes',
     get: function get() {
+      var any = _react.PropTypes.any;
+      var style = _reactNative.View.propTypes.style;
+
+
       return {
-        linkStyle: _reactNative.View.propTypes.style,
-        urlLinker: _react.PropTypes.any,
-        store: _react.PropTypes.any
+        linkStyle: style,
+        urlLinker: any,
+        store: any
       };
     }
   }]);
@@ -100,6 +111,7 @@ var Link = exports.Link = function (_React$Component) {
 
       var _ref2 = this.props || {};
 
+      var transition = _ref2.transition;
       var to = _ref2.to;
       var _ref2$pass = _ref2.pass;
       var pass = _ref2$pass === undefined ? null : _ref2$pass;
@@ -118,7 +130,7 @@ var Link = exports.Link = function (_React$Component) {
         if (uri.host === 'previous') {
           store.dispatch((0, _router.popPage)());
         } else {
-          store.dispatch((0, _router.pushPage)(new _Route.Route({ key: to, pass: pass })));
+          store.dispatch((0, _router.pushPage)(new _Route.Route({ key: to, pass: pass, transition: transition })));
         }
       }
     }

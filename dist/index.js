@@ -28,6 +28,15 @@ Object.defineProperty(exports, 'Router', {
   }
 });
 
+var _Tabs = require('./containers/Tabs');
+
+Object.defineProperty(exports, 'Tabs', {
+  enumerable: true,
+  get: function get() {
+    return _Tabs.Tabs;
+  }
+});
+
 var _Link = require('./components/Link');
 
 Object.defineProperty(exports, 'Link', {

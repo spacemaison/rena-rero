@@ -31,6 +31,8 @@ var _DrawerOptions = require('../models/DrawerOptions');
 
 var _RouterState = require('../models/RouterState');
 
+var _Transitioners = require('../models/Transitioners');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -134,7 +136,7 @@ var Router = exports.Router = function (_React$Component) {
       var routerState = _props.routerState;
 
 
-      var ActivePage = getPage(routerState.pages, props.scene.route);
+      var ActivePage = routerState.getPage(props.scene.route);
       var renderToolbar = ActivePage.renderToolbar || _Page.Page.renderToolbar;
       var toolbar = renderToolbar.call(ActivePage, Object.assign({}, props, {
         onNavigateBack: onNavigateBack,
@@ -159,6 +161,7 @@ var Router = exports.Router = function (_React$Component) {
     key: 'renderScene',
     value: function renderScene(props) {
       var onNavigateBack = this.onNavigateBack;
+      var routerState = this.props.routerState;
 
       var _ref2 = props.scene || {};
 
@@ -167,19 +170,19 @@ var Router = exports.Router = function (_React$Component) {
       var pass = route.pass;
 
 
-      var CurrentPage = getPage(this.props.routerState.pages, route);
-      var getStyle = CurrentPage.style || _Page.Page.style;
-      var getPanHandlers = CurrentPage.panHandlers || _Page.Page.panHandlers;
-
-      var style = getStyle.call(CurrentPage, props);
-      var panHandlers = getPanHandlers.call(CurrentPage, Object.assign({}, props, {
+      var passedProps = Object.assign({}, props, {
         onNavigateBack: onNavigateBack
-      }));
+      });
+      var CurrentPage = routerState.getPage(route);
+      var transitions = new _Transitioners.Transitioners(route.transitions, CurrentPage.transitions);
+
+      var style = transitions.style.call(CurrentPage, passedProps);
+      var handlers = transitions.handlers.call(CurrentPage, passedProps);
 
       return _react2.default.createElement(_reactNative.NavigationExperimental.Card, _extends({}, props, {
         key: 'card_' + props.scene.key,
         style: style,
-        panHandlers: panHandlers,
+        panHandlers: handlers,
         renderScene: function renderScene(props) {
           return _react2.default.createElement(CurrentPage, _extends({}, pass || {}, { url: url }));
         }
@@ -219,22 +222,3 @@ var styles = _reactNative.StyleSheet.create({
     bottom: 0
   }
 });
-
-function getPage(routes, route) {
-  var url = route.url;
-
-
-  if (!url || !url.protocol || url.protocol !== 'page:') {
-    throw new Error('URL protocol is not \'page:\' for route: ' + url);
-  }
-
-  if (!routes.hasOwnProperty(url.path)) {
-    throw new Error('Page at: "' + url.path + '" does not exist');
-  }
-
-  if (Object.getPrototypeOf(routes[url.path].prototype).constructor !== _Page.Page) {
-    throw new TypeError('Expected Page at route: ' + url.path + '. Did your page inherit from the ' + 'Page component?');
-  }
-
-  return routes[url.path];
-}
