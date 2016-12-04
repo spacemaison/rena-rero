@@ -3,15 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Tabs = undefined;
+exports.TabLink = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _url = require('url');
-
-var _url2 = _interopRequireDefault(_url);
 
 var _react = require('react');
 
@@ -19,11 +15,13 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactNative = require('react-native');
 
-var _TabLink = require('./TabLink');
+var _Link = require('./Link');
 
-var _Page2 = require('./Page');
+var _Tabs = require('./Tabs');
 
-var _tabs = require('../styles/tabs');
+var _Transitioners = require('../models/Transitioners');
+
+var _tabLink = require('../styles/tab-link');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -33,66 +31,49 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Tabs = exports.Tabs = function (_Page) {
-  _inherits(Tabs, _Page);
+var noop = function noop() {};
+var noTransition = new _Transitioners.Transitioners({ style: noop, handlers: noop });
 
-  function Tabs() {
-    _classCallCheck(this, Tabs);
+var TabLink = exports.TabLink = function (_React$Component) {
+  _inherits(TabLink, _React$Component);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Tabs).apply(this, arguments));
+  function TabLink() {
+    _classCallCheck(this, TabLink);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(TabLink).apply(this, arguments));
   }
 
-  _createClass(Tabs, [{
+  _createClass(TabLink, [{
     key: 'render',
     value: function render() {
       var _props = this.props;
-      var CurrentPage = _props.CurrentPage;
       var pass = _props.pass;
+      var to = _props.to;
       var tabs = _props.tabs;
-      var url = _props.url;
 
+      var props = {
+        pass: pass, to: to,
+        transitions: noTransition,
+        renderPage: _Tabs.Tabs.renderTabs.bind(null, tabs),
+        renderToolbar: function renderToolbar() {
+          return null;
+        }
+      };
 
-      return Tabs.renderTabs(tabs, CurrentPage, { pass: pass, url: url });
+      return _react2.default.createElement(_Link.Link, _extends({}, props, { style: _tabLink.styles.tabLink }));
     }
   }], [{
-    key: 'renderToolbar',
-    value: function renderToolbar() {
-      return null;
-    }
-  }, {
-    key: 'renderTabs',
-    value: function renderTabs(tabs, Component, route) {
-      return _react2.default.createElement(
-        _reactNative.View,
-        { style: _tabs.styles.tabs },
-        _react2.default.createElement(Component, _extends({}, route.pass, { url: route.url })),
-        _react2.default.createElement(
-          _reactNative.View,
-          { style: _tabs.styles.tabbar },
-          tabs.map(function (page) {
-            return _react2.default.createElement(_TabLink.TabLink, { key: page, to: page, tabs: tabs });
-          })
-        )
-      );
-    }
-  }, {
     key: 'propTypes',
     get: function get() {
       var arrayOf = _react.PropTypes.arrayOf;
-      var any = _react.PropTypes.any;
-      var instanceOf = _react.PropTypes.instanceOf;
-      var object = _react.PropTypes.object;
       var string = _react.PropTypes.string;
 
 
-      return {
-        CurrentPage: any,
-        pass: object,
-        tabs: arrayOf(string),
-        url: instanceOf(_url2.default.Url)
-      };
+      return Object.assign({}, _Link.Link.propTypes, {
+        tabs: arrayOf(string)
+      });
     }
   }]);
 
-  return Tabs;
-}(_Page2.Page);
+  return TabLink;
+}(_react2.default.Component);

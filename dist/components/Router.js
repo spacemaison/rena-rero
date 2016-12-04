@@ -41,6 +41,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var defaultPanResponder = _reactNative.PanResponder.create({});
+
 var Router = exports.Router = function (_React$Component) {
   _inherits(Router, _React$Component);
 
@@ -134,10 +136,10 @@ var Router = exports.Router = function (_React$Component) {
       var _props = this.props;
       var toolbarStyle = _props.toolbarStyle;
       var routerState = _props.routerState;
+      var route = props.scene.route;
 
-
-      var ActivePage = routerState.getPage(props.scene.route);
-      var renderToolbar = ActivePage.renderToolbar || _Page.Page.renderToolbar;
+      var ActivePage = routerState.getPage(route);
+      var renderToolbar = route.renderToolbar || ActivePage.renderToolbar || _Page.Page.renderToolbar;
       var toolbar = renderToolbar.call(ActivePage, Object.assign({}, props, {
         onNavigateBack: onNavigateBack,
         toolbarStyle: toolbarStyle
@@ -177,14 +179,17 @@ var Router = exports.Router = function (_React$Component) {
       var transitions = new _Transitioners.Transitioners(route.transitions, CurrentPage.transitions);
 
       var style = transitions.style.call(CurrentPage, passedProps);
-      var handlers = transitions.handlers.call(CurrentPage, passedProps);
+      var render = route.renderPage || function (Component, route) {
+        return _react2.default.createElement(Component, _extends({}, route.pass || {}, { url: route.url }));
+      };
+      var handlers = Object.assign({}, defaultPanResponder.panHandlers, transitions.handlers.call(CurrentPage, passedProps));
 
       return _react2.default.createElement(_reactNative.NavigationExperimental.Card, _extends({}, props, {
         key: 'card_' + props.scene.key,
         style: style,
         panHandlers: handlers,
         renderScene: function renderScene(props) {
-          return _react2.default.createElement(CurrentPage, _extends({}, pass || {}, { url: url }));
+          return render(CurrentPage, route);
         }
       }));
     }

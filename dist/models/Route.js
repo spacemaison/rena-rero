@@ -11,6 +11,8 @@ var _url = require('url');
 
 var _url2 = _interopRequireDefault(_url);
 
+var _Transitioners = require('./Transitioners');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -23,13 +25,14 @@ var Route = exports.Route = function () {
     var url = _ref.url;
     var _ref$pass = _ref.pass;
     var pass = _ref$pass === undefined ? null : _ref$pass;
-    var _ref$transition = _ref.transition;
-    var transition = _ref$transition === undefined ? function () {} : _ref$transition;
+    var _ref$transitions = _ref.transitions;
+    var transitions = _ref$transitions === undefined ? new _Transitioners.Transitioners() : _ref$transitions;
+    var renderPage = _ref.renderPage;
+    var renderToolbar = _ref.renderToolbar;
 
     _classCallCheck(this, Route);
 
-    this.pass = pass;
-    this.transition = transition;
+    Object.assign(this, { pass: pass, renderPage: renderPage, renderToolbar: renderToolbar, transitions: transitions });
 
     if (typeof key === 'string' && key) {
       this.url = _url2.default.parse(key, true);

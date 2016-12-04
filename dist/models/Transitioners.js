@@ -39,19 +39,10 @@ var composeResult = function composeResult() {
 
 var Transitioners = exports.Transitioners = function () {
   function Transitioners() {
-    for (var _len = arguments.length, handlers = Array(_len), _key = 0; _key < _len; _key++) {
-      handlers[_key] = arguments[_key];
-    }
-
     _classCallCheck(this, Transitioners);
 
-    handlers = handlers.map(function (handler) {
-      return handler || {};
-    });
-
-    if (!handlers.length) {
-      this.style = defaultStyle;
-      this.handlers = defaultHandlers;
+    for (var _len = arguments.length, handlers = Array(_len), _key = 0; _key < _len; _key++) {
+      handlers[_key] = arguments[_key];
     }
 
     var _iteratorNormalCompletion = true;
@@ -59,7 +50,9 @@ var Transitioners = exports.Transitioners = function () {
     var _iteratorError = undefined;
 
     try {
-      for (var _iterator = handlers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      for (var _iterator = handlers.filter(function (handler) {
+        return handler != null;
+      })[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
         var obj = _step.value;
         var style = obj.style;
         var _handlers = obj.handlers;
@@ -90,12 +83,12 @@ var Transitioners = exports.Transitioners = function () {
   _createClass(Transitioners, [{
     key: 'style',
     value: function style() {
-      return defaultStyle.apply(undefined, arguments);
+      return {};
     }
   }, {
     key: 'handlers',
     value: function handlers() {
-      return defaultHandlers.apply(undefined, arguments);
+      return {};
     }
   }]);
 

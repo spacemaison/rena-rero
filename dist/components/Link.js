@@ -21,6 +21,8 @@ var _router = require('../actions/router');
 
 var _Route = require('../models/Route');
 
+var _Transitioners = require('../models/Transitioners');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -36,8 +38,9 @@ var Link = exports.Link = function (_React$Component) {
     key: 'propTypes',
     get: function get() {
       var any = _react.PropTypes.any;
-      var string = _react.PropTypes.string;
       var func = _react.PropTypes.func;
+      var instanceOf = _react.PropTypes.instanceOf;
+      var string = _react.PropTypes.string;
       var style = _reactNative.View.propTypes.style;
 
 
@@ -45,7 +48,9 @@ var Link = exports.Link = function (_React$Component) {
         pass: any,
         style: style,
         to: string.isRequired,
-        transition: func
+        transitions: instanceOf(_Transitioners.Transitioners),
+        renderPage: func,
+        renderToolbar: func
       };
     }
   }, {
@@ -111,10 +116,12 @@ var Link = exports.Link = function (_React$Component) {
 
       var _ref2 = this.props || {};
 
-      var transition = _ref2.transition;
+      var transitions = _ref2.transitions;
       var to = _ref2.to;
       var _ref2$pass = _ref2.pass;
       var pass = _ref2$pass === undefined ? null : _ref2$pass;
+      var renderPage = _ref2.renderPage;
+      var renderToolbar = _ref2.renderToolbar;
 
       var uri = _url2.default.parse(to);
 
@@ -127,10 +134,16 @@ var Link = exports.Link = function (_React$Component) {
       } else {
         store.dispatch((0, _router.closeDrawer)());
 
-        if (uri.host === 'previous') {
+        if (uri.path === 'previous') {
           store.dispatch((0, _router.popPage)());
         } else {
-          store.dispatch((0, _router.pushPage)(new _Route.Route({ key: to, pass: pass, transition: transition })));
+          store.dispatch((0, _router.pushPage)(new _Route.Route({
+            key: to,
+            pass: pass,
+            renderPage: renderPage,
+            renderToolbar: renderToolbar,
+            transitions: transitions
+          })));
         }
       }
     }

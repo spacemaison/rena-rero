@@ -15,6 +15,8 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactNative = require('react-native');
 
+var _Transitioners = require('../models/Transitioners');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -23,11 +25,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Navigation = _reactNative.NavigationExperimental || { Card: {}, Header: Header };
+var Navigation = _reactNative.NavigationExperimental || { Header: {} };
 var Header = Navigation.Header;
-var _Navigation$Card = Navigation.Card;
-var CardStackPanResponder = _Navigation$Card.CardStackPanResponder;
-var CardStackStyleInterpolator = _Navigation$Card.CardStackStyleInterpolator;
 
 var Page = exports.Page = function (_React$Component) {
   _inherits(Page, _React$Component);
@@ -39,11 +38,6 @@ var Page = exports.Page = function (_React$Component) {
   }
 
   _createClass(Page, null, [{
-    key: 'panHandlers',
-    value: function panHandlers(props) {
-      return CardStackPanResponder.forHorizontal(props);
-    }
-  }, {
     key: 'renderRightComponent',
     value: function renderRightComponent() {
       return null;
@@ -68,14 +62,14 @@ var Page = exports.Page = function (_React$Component) {
       }));
     }
   }, {
-    key: 'style',
-    value: function style(props) {
-      return CardStackStyleInterpolator.forHorizontal(props);
-    }
-  }, {
     key: 'title',
     get: function get() {
       return '';
+    }
+  }, {
+    key: 'transitions',
+    get: function get() {
+      return null;
     }
   }]);
 
