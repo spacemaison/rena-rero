@@ -1,8 +1,7 @@
-/*globals describe, it*/
+/* globals describe, it */
 import { expect } from 'chai'
 import { stub } from 'sinon'
 import { Router } from '../../lib/components/Router'
-import { Route } from '../../lib/models/Route'
 
 describe('<Router />', () => {
   it('navigates back', () => {

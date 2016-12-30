@@ -1,6 +1,5 @@
-/*globals describe, it*/
+/* globals describe, it */
 import { expect } from 'chai'
-import { stub } from 'sinon'
 import { Page } from '../../lib/components/Page'
 
 describe('<Page />', () => {

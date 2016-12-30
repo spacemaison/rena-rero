@@ -1,4 +1,4 @@
-/*globals describe, it*/
+/* globals describe, it */
 import { expect } from 'chai'
 import { stub } from 'sinon'
 import { Link } from '../../lib/components/Link'
