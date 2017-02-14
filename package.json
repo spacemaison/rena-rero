@@ -1,6 +1,6 @@
 {
   "name": "rena-rero",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "React Native's Navigator component wrapped with a Redux compatible router",
   "main": "dist/index.js",
   "react-native": "lib/index.js",
