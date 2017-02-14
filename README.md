@@ -1,3 +1,7 @@
+## Note: __Dont Use This__
+
+It's likely that Space Maison is going to be ported to the [React Navigation][] library, it has a lot of the features that this router does and is much further along in development.
+
 Rena Rero
 =========
 
@@ -124,3 +128,4 @@ store.dispatch(popPage())
 [React Native]: http://TODO
 [Redux]: http://TODO
 [React Redux]: http://TODO
+[React Navigation]: https://github.com/react-community/react-navigation
